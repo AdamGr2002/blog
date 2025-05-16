@@ -1,0 +1,30 @@
+@import "tailwindcss";
+/* src/styles/global.css (or similar, often imported in BaseLayout.astro) */
+@theme {
+    --mustang-blue:: #0A1931;
+    --mustang-red:#8c0000;
+    --mustang-gold:#ffc107;
+    --mustang-silver:#c0c0c0;
+    --mustang-charcoal:#333333;
+}
+body {
+  background-color: var(--mustang-charcoal); /* Or a dark blue */
+  color: var(--mustang-silver); /* Light text for readability on dark bg */
+  font-family: 'Open Sans', sans-serif;
+  /* Or directly: font-family: 'Open Sans', sans-serif; */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--mustang-gold); /* Gold for headings */
+  font-family: 'Playfair Display', serif;
+  /* Or directly: font-family: 'Playfair Display', serif; */
+}
+
+a {
+  color: var(--mustang-red);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--mustang-gold);
+  text-decoration: underline;
+}
