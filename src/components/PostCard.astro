@@ -1,0 +1,58 @@
+---
+// src/components/PostCard.astro
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets'; // If using astro:assets for image optimization
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { slug, data } = post;
+const { title, pubDate, description, heroImage, tags } = data;
+
+const formattedDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="bg-mustang-charcoal/80 rounded-lg shadow-xl overflow-hidden flex flex-col hover:shadow-mustang-red/30 transition-shadow duration-300 border border-mustang-blue/50 hover:border-mustang-red">
+  {heroImage && (
+    <a href={`/blog/${slug}/`} aria-label={`Read more about ${title}`}>
+      {typeof heroImage === 'string' ? (
+        <img src={heroImage} alt="" class="w-full h-48 object-cover" loading="lazy" />
+      ) : (
+        <Image src={heroImage} alt="" width={400} height={200} format="webp" quality={80} class="w-full h-48 object-cover" />
+      )}
+    </a>
+  )}
+  <div class="p-6 flex flex-col flex-grow">
+    <h3 class="text-xl font-bold text-mustang-gold mb-2 leading-tight">
+      <a href={`/blog/${slug}/`} class="hover:text-mustang-red transition-colors duration-200">
+        {title}
+      </a>
+    </h3>
+    <time datetime={pubDate.toISOString()} class="text-sm text-mustang-silver mb-3 block">
+      {formattedDate}
+    </time>
+    <p class="text-gray-300 text-sm mb-4 flex-grow leading-relaxed">
+      {description}
+    </p>
+    {tags && tags.length > 0 && (
+      <div class="mb-4">
+        {tags.slice(0, 3).map((tag: string) => (
+          <span class="inline-block bg-mustang-blue text-mustang-gold text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+    <div class="mt-auto">
+      <a href={`/blog/${slug}/`} class="font-semibold text-mustang-red hover:text-mustang-gold transition-colors duration-200 group">
+        Ignite Knowledge <span class="inline-block transform group-hover:translate-x-1 transition-transform duration-200">→</span>
+      </a>
+    </div>
+  </div>
+</article>

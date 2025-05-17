@@ -1,0 +1,27 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Layout from '../../layout/BaseLayout.astro'; // Corrected path assuming 'layout' is 'layouts'
+
+export async function getStaticPaths() {
+    const blogEntries = await getCollection('blog');
+    return blogEntries.map((entry: CollectionEntry<'blog'>) => ({
+        params: { slug: entry.slug }, // Changed 'post' to 'slug' to match the filename [slug].astro
+        props: { entry },
+    }));
+}
+
+interface Props {
+    entry: CollectionEntry<'blog'>;
+}
+
+const { entry } = Astro.props as Props; // Added type assertion for Astro.props
+const { Content } = await entry.render();
+---
+<Layout title={entry.data.title}>
+    <h1>{entry.data.title}</h1>
+    <p>Published on: {new Date(entry.data.pubDate).toLocaleDateString()}</p> {/* Ensure pubDate is a Date object or string that can be parsed */}
+    {entry.data.heroImage && <img src={entry.data.heroImage} alt="" class="w-full h-auto object-cover my-4" />} {/* Optional: Display hero image */}
+    <article class="prose prose-invert max-w-none"> {/* Added some basic prose styling for readability */}
+        <Content />
+    </article>
+</Layout>

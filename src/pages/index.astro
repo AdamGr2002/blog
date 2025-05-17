@@ -1,19 +1,73 @@
 ---
+// src/pages/index.astro
+import BaseLayout from '../layout/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro'; // We'll create this next
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 
+// Fetch all blog posts and sort them by publication date (newest first)
+const allPosts: CollectionEntry<'blog'>[] = (await getCollection('blog')).sort(
+  (a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+// You might want to limit the number of posts on the homepage
+const featuredPosts = allPosts.slice(0, 6); // Show latest 6 posts, for example
+
+const pageTitle = "The Alchemist's Archives"; // Thematic title
+const pageDescription = "Distillations of thought, strategy, and the occasional spark of insight. A personal blog with a Fullmetal Alchemist: Brotherhood flair.";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<a href="/">Home</a>
-  		<a href="/about/">About</a>
-  		<a href="/blog/">Blog</a>
-		<h1>Blog</h1>
-	</body>
-</html>
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <section class="py-12 md:py-16 bg-mustang-charcoal text-gray-200"> {/* Or your primary dark background */}
+    <div class="container mx-auto px-6 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-mustang-gold mb-4 leading-tight">
+        Welcome to <span class="whitespace-nowrap">{pageTitle}</span>
+      </h1>
+      <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto">
+        {pageDescription}
+      </p>
+      <!-- Optional: A subtle visual element -->
+      <div class="w-24 h-1 bg-mustang-red mx-auto mb-12"></div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-16 bg-gray-800/50"> {/* Slightly different bg for contrast */}
+    <div class="container mx-auto px-6">
+      <h2 class="text-3xl md:text-4xl font-semibold text-mustang-red mb-10 text-center">
+        Latest Transmissions
+      </h2>
+
+      {featuredPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredPosts.map(post => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <p class="text-center text-mustang-silver text-xl">
+          The archives are currently quiet... No transmissions found. Check back soon!
+        </p>
+      )}
+
+      {allPosts.length > featuredPosts.length && (
+        <div class="text-center mt-12">
+          <a
+            href="/blog"
+            class="inline-block bg-mustang-blue hover:bg-opacity-80 text-mustang-gold font-semibold py-3 px-8 rounded-md shadow-lg transition-colors duration-300 border-2 border-mustang-gold hover:border-mustang-red"
+          >
+            View All Transmissions →
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Optional: Another thematic section -->
+  <section class="py-12 md:py-16 bg-mustang-blue text-center">
+    <div class="container mx-auto px-6">
+        <h3 class="text-2xl text-mustang-gold mb-4">"Humankind cannot gain anything without first giving something in return."</h3>
+        <p class="text-mustang-silver">Equivalent Exchange applies even to knowledge.</p>
+    </div>
+  </section>
+
+</BaseLayout>
